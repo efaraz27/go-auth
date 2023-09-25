@@ -4,6 +4,7 @@ import (
 	"github.com/efaraz27/go-auth/core"
 	"github.com/efaraz27/go-auth/models"
 	"github.com/efaraz27/go-auth/repositories"
+	"github.com/google/uuid"
 )
 
 // UserService is a struct that defines the user service
@@ -16,39 +17,93 @@ func NewUserService(repository *repositories.UserRepository) *UserService {
 	return &UserService{repository}
 }
 
+// FindAll is a method that returns all users
+func (s *UserService) FindAll() ([]models.User, *core.Exception) {
+
+	users, err := s.repository.FindAll()
+
+	if err != nil {
+		return nil, core.NewInternalServerErrorExceptionBuilder().WithMessage("Unable to fetch users").Build()
+	}
+
+	return users, nil
+}
+
+// FindByUUID is a method that returns a user by UUID
+func (s *UserService) FindByUUID(uuid uuid.UUID) (*models.User, *core.Exception) {
+
+	user, err := s.repository.FindByUUID(uuid)
+
+	if err != nil {
+		return nil, core.NewInternalServerErrorExceptionBuilder().WithMessage("Unable to fetch user").Build()
+	}
+
+	return user, nil
+}
+
+// FindByEmail is a method that returns a user by email
+func (s *UserService) FindByEmail(email string) (*models.User, *core.Exception) {
+
+	user, err := s.repository.FindByEmail(email)
+
+	if err != nil {
+		return nil, core.NewInternalServerErrorExceptionBuilder().WithMessage("Unable to fetch user").Build()
+	}
+
+	return user, nil
+}
+
 // Create is a method that creates a new user
-func (s *UserService) Create(user *models.User) (*models.User, *core.Exception, error) {
+func (s *UserService) Create(user *models.User) (*models.User, *core.Exception) {
 	// Check if user exists
 	_, err := s.repository.FindByEmail(user.Email)
 
 	if err == nil {
-		return nil, core.NewBadRequestExceptionBuilder().WithMessage("User already exists").Build(), nil
+		return nil, core.NewBadRequestExceptionBuilder().WithMessage("User already exists").Build()
 	}
 
-	return s.repository.Create(user)
-}
+	user, err = s.repository.Create(user)
 
-// FindAll is a method that returns all users
-func (s *UserService) FindAll() ([]models.User, error) {
-	return s.repository.FindAll()
-}
+	if err != nil {
+		return nil, core.NewInternalServerErrorExceptionBuilder().WithMessage("Unable to create user").Build()
+	}
 
-// FindByUUID is a method that returns a user by UUID
-func (s *UserService) FindByUUID(uuid string) (*models.User, error) {
-	return s.repository.FindByUUID(uuid)
-}
+	return user, nil
 
-// FindByEmail is a method that returns a user by email
-func (s *UserService) FindByEmail(email string) (*models.User, error) {
-	return s.repository.FindByEmail(email)
 }
 
 // Update is a method that updates a user
-func (s *UserService) Update(user *models.User) (*models.User, error) {
-	return s.repository.Update(user)
+func (s *UserService) Update(user *models.User) (*models.User, *core.Exception) {
+	// Check if user exists
+	_, err := s.repository.FindByUUID(user.Uuid)
+
+	if err != nil {
+		return nil, core.NewBadRequestExceptionBuilder().WithMessage("User does not exist").Build()
+	}
+
+	user, err = s.repository.Update(user)
+
+	if err != nil {
+		return nil, core.NewInternalServerErrorExceptionBuilder().WithMessage("Unable to update user").Build()
+	}
+
+	return user, nil
 }
 
 // Delete is a method that deletes a user
-func (s *UserService) Delete(id int) error {
-	return s.repository.Delete(id)
+func (s *UserService) Delete(uuid uuid.UUID) *core.Exception {
+	// Check if user exists
+	_, err := s.repository.FindByUUID(uuid)
+
+	if err != nil {
+		return core.NewBadRequestExceptionBuilder().WithMessage("User does not exist").Build()
+	}
+
+	err = s.repository.Delete(uuid)
+
+	if err != nil {
+		return core.NewInternalServerErrorExceptionBuilder().WithMessage("Unable to delete user").Build()
+	}
+
+	return nil
 }

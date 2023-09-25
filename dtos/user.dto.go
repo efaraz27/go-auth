@@ -17,14 +17,17 @@ type UserUpdateDTO struct {
 	Email     string `json:"email" validate:"required,email"`
 }
 
-// Validate is a method that validates the user create DTO
+// Validate is a method that validates the user DTO
 func (u *UserCreateDTO) Validate() error {
-	validate := validator.New()
-	return validate.Struct(u)
+	return validateUserDTO(u)
 }
 
-// Validate is a method that validates the user update DTO
+// Validate is a method that validates the user DTO
 func (u *UserUpdateDTO) Validate() error {
+	return validateUserDTO(u)
+}
+
+func validateUserDTO(u interface{}) error {
 	validate := validator.New()
 	return validate.Struct(u)
 }

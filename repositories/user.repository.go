@@ -1,8 +1,8 @@
 package repositories
 
 import (
-	"github.com/efaraz27/go-auth/core"
 	"github.com/efaraz27/go-auth/models"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -17,13 +17,13 @@ func NewUserRepository(db *gorm.DB) *UserRepository {
 }
 
 // Create is a method that creates a new user
-func (r *UserRepository) Create(user *models.User) (*models.User, *core.Exception, error) {
+func (r *UserRepository) Create(user *models.User) (*models.User, error) {
 
 	if err := r.db.Create(user).Error; err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
-	return user, nil, nil
+	return user, nil
 }
 
 // FindAll is a method that returns all users
@@ -38,7 +38,7 @@ func (r *UserRepository) FindAll() ([]models.User, error) {
 }
 
 // FindByUUID is a method that returns a user by UUID
-func (r *UserRepository) FindByUUID(uuid string) (*models.User, error) {
+func (r *UserRepository) FindByUUID(uuid uuid.UUID) (*models.User, error) {
 	var user models.User
 
 	if err := r.db.Where("uuid = ?", uuid).First(&user).Error; err != nil {
@@ -69,10 +69,10 @@ func (r *UserRepository) Update(user *models.User) (*models.User, error) {
 }
 
 // Delete is a method that deletes a user
-func (r *UserRepository) Delete(id int) error {
-	if err := r.db.Delete(&models.User{}, id).Error; err != nil {
-		return err
-	}
+func (r *UserRepository) Delete(uuid uuid.UUID) error {
+	// if err := r.db.Delete(&models.User{}, id).Error; err != nil {
+	// 	return err
+	// }
 
 	return nil
 }
