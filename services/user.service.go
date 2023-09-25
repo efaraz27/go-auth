@@ -54,12 +54,20 @@ func (s *UserService) FindByEmail(email string) (*models.User, *core.Exception) 
 }
 
 // Create is a method that creates a new user
-func (s *UserService) Create(user *models.User) (*models.User, *core.Exception) {
+func (s *UserService) Create(email string, password string, firstName string, lastName string) (*models.User, *core.Exception) {
+
 	// Check if user exists
-	_, err := s.repository.FindByEmail(user.Email)
+	_, err := s.repository.FindByEmail(email)
 
 	if err == nil {
 		return nil, core.NewBadRequestExceptionBuilder().WithMessage("User already exists").Build()
+	}
+
+	user := &models.User{
+		Email:     email,
+		Password:  password,
+		FirstName: firstName,
+		LastName:  lastName,
 	}
 
 	user, err = s.repository.Create(user)
@@ -73,12 +81,18 @@ func (s *UserService) Create(user *models.User) (*models.User, *core.Exception) 
 }
 
 // Update is a method that updates a user
-func (s *UserService) Update(user *models.User) (*models.User, *core.Exception) {
+func (s *UserService) Update(email string, firstName string, lastName string) (*models.User, *core.Exception) {
 	// Check if user exists
-	_, err := s.repository.FindByUUID(user.Uuid)
+	_, err := s.repository.FindByEmail(email)
 
 	if err != nil {
 		return nil, core.NewBadRequestExceptionBuilder().WithMessage("User does not exist").Build()
+	}
+
+	user := &models.User{
+		Email:     email,
+		FirstName: firstName,
+		LastName:  lastName,
 	}
 
 	user, err = s.repository.Update(user)

@@ -3,8 +3,8 @@ package controllers
 import (
 	"github.com/efaraz27/go-auth/core"
 	"github.com/efaraz27/go-auth/dtos"
-	"github.com/efaraz27/go-auth/models"
 	"github.com/efaraz27/go-auth/services"
+	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 
 	"github.com/gofiber/fiber/v2"
@@ -63,57 +63,23 @@ func (c *UserController) FindByEmail(ctx *fiber.Ctx) error {
 	return ctx.Status(200).JSON(user)
 }
 
-// Create is a method that creates a new user
-func (c *UserController) Create(ctx *fiber.Ctx) error {
-	user := new(dtos.UserCreateDTO)
-
-	if err := ctx.BodyParser(user); err != nil {
-		exception := core.NewBadRequestExceptionBuilder().WithMessage("Unable to parse JSON").Build()
-		return ctx.Status(exception.Status).JSON(exception)
-	}
-
-	if err := user.Validate(); err != nil {
-		exception := core.NewBadRequestExceptionBuilder().WithMessage("Invalid request body").WithPayload(err.Error()).Build()
-		return ctx.Status(exception.Status).JSON(exception)
-	}
-
-	newUser := models.User{
-		FirstName: user.FirstName,
-		LastName:  user.LastName,
-		Email:     user.Email,
-		Password:  user.Password,
-	}
-
-	createdUser, exception := c.service.Create(&newUser)
-
-	if exception != nil {
-		return ctx.Status(exception.Status).JSON(exception)
-	}
-
-	return ctx.Status(201).JSON(createdUser)
-}
-
 // Update is a method that updates a user
 func (c *UserController) Update(ctx *fiber.Ctx) error {
-	user := new(dtos.UserUpdateDTO)
+	userUpdateDTO := new(dtos.UserUpdateDTO)
 
-	if err := ctx.BodyParser(user); err != nil {
+	if err := ctx.BodyParser(userUpdateDTO); err != nil {
 		exception := core.NewBadRequestExceptionBuilder().WithMessage("Unable to parse JSON").Build()
 		return ctx.Status(exception.Status).JSON(exception)
 	}
 
-	if err := user.Validate(); err != nil {
+	validator := validator.New()
+
+	if err := validator.Struct(userUpdateDTO); err != nil {
 		exception := core.NewBadRequestExceptionBuilder().WithMessage("Invalid request body").WithPayload(err.Error()).Build()
 		return ctx.Status(exception.Status).JSON(exception)
 	}
 
-	userUpdate := models.User{
-		FirstName: user.FirstName,
-		LastName:  user.LastName,
-		Email:     user.Email,
-	}
-
-	updatedUser, exception := c.service.Update(&userUpdate)
+	updatedUser, exception := c.service.Update(userUpdateDTO.Email, userUpdateDTO.FirstName, userUpdateDTO.LastName)
 
 	if exception != nil {
 		return ctx.Status(exception.Status).JSON(exception)

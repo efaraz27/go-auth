@@ -35,15 +35,16 @@ func main() {
 
 	// setup services
 	userService := services.NewUserService(userRepository)
+	jwtService := services.NewJWTService(config.JwtSecret, config.AccessTokenExpDeltaSeconds, config.RefreshTokenExpDeltaSeconds)
+	authService := services.NewAuthService(userService, jwtService)
 
 	// setup controllers
 	userController := controllers.NewUserController(userService)
-
-	// setup routers
-	userRouter := routers.NewUserRouter(userController)
+	authController := controllers.NewAuthController(authService)
 
 	// setup routes
-	userRouter.SetupRoutes(app)
+	routers.NewUserRouter(userController).SetupRoutes(app)
+	routers.NewAuthRouter(authController).SetupRoutes(app)
 
 	app.Get("/api/healthchecker", func(c *fiber.Ctx) error {
 		return c.Status(200).JSON(fiber.Map{

@@ -28,7 +28,6 @@ func (r *userRouter) SetupRoutes(app *fiber.App) {
 	api.Get("/", r.controller.FindAll)
 	api.Get("/uuid/:uuid", r.controller.FindByUUID)
 	api.Get("/email/:email", r.controller.FindByEmail)
-	api.Post("/", r.controller.Create)
 	api.Put("/:id", r.controller.Update)
 	api.Delete("/:id", r.controller.Delete)
 

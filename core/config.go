@@ -21,6 +21,10 @@ type Config struct {
 	PostgresUser     string
 	PostgresPassword string
 	PostgresDBName   string
+
+	JwtSecret                   string
+	AccessTokenExpDeltaSeconds  int
+	RefreshTokenExpDeltaSeconds int
 }
 
 // LoadConfig is a function that loads the environment variables
@@ -42,15 +46,24 @@ func LoadConfig() Config {
 	postgresPassword := os.Getenv("POSTGRES_PASSWORD")
 	postgresDBName := os.Getenv("POSTGRES_DBNAME")
 
+	jwtSecret := os.Getenv("JWT_SECRET")
+	accessTokenExpDeltaSeconds, _ := strconv.Atoi(os.Getenv("ACCESS_TOKEN_EXP_DELTA_SECONDS"))
+	refreshTokenExpDeltaSeconds, _ := strconv.Atoi(os.Getenv("REFRESH_TOKEN_EXP_DELTA_SECONDS"))
+
 	config := Config{
-		AppName:          appName,
-		AppPort:          appPort,
-		AppEnv:           appEnv,
+		AppName: appName,
+		AppPort: appPort,
+		AppEnv:  appEnv,
+
 		PostgresHost:     postgresHost,
 		PostgresPort:     postgresPort,
 		PostgresUser:     postgresUser,
 		PostgresPassword: postgresPassword,
 		PostgresDBName:   postgresDBName,
+
+		JwtSecret:                   jwtSecret,
+		AccessTokenExpDeltaSeconds:  accessTokenExpDeltaSeconds,
+		RefreshTokenExpDeltaSeconds: refreshTokenExpDeltaSeconds,
 	}
 
 	return config
