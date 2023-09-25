@@ -57,11 +57,16 @@ func ConnectDB(
 		dbname,
 	)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+
 	if err != nil {
 		panic(err)
 	}
 
-	db.AutoMigrate(&models.User{})
+	err = db.AutoMigrate(&models.User{})
+
+	if err != nil {
+		panic(err)
+	}
 
 	return db
 }
