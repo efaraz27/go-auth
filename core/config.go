@@ -22,6 +22,10 @@ type Config struct {
 	PostgresPassword string
 	PostgresDBName   string
 
+	RedisHost     string
+	RedisPort     int
+	RedisPassword string
+
 	JwtSecret                   string
 	AccessTokenExpDeltaSeconds  int
 	RefreshTokenExpDeltaSeconds int
@@ -50,6 +54,10 @@ func LoadConfig() Config {
 	accessTokenExpDeltaSeconds, _ := strconv.Atoi(os.Getenv("ACCESS_TOKEN_EXP_DELTA_SECONDS"))
 	refreshTokenExpDeltaSeconds, _ := strconv.Atoi(os.Getenv("REFRESH_TOKEN_EXP_DELTA_SECONDS"))
 
+	redisHost := os.Getenv("REDIS_HOST")
+	redisPort, _ := strconv.Atoi(os.Getenv("REDIS_PORT"))
+	redisPassword := os.Getenv("REDIS_PASSWORD")
+
 	config := Config{
 		AppName: appName,
 		AppPort: appPort,
@@ -60,6 +68,10 @@ func LoadConfig() Config {
 		PostgresUser:     postgresUser,
 		PostgresPassword: postgresPassword,
 		PostgresDBName:   postgresDBName,
+
+		RedisHost:     redisHost,
+		RedisPort:     redisPort,
+		RedisPassword: redisPassword,
 
 		JwtSecret:                   jwtSecret,
 		AccessTokenExpDeltaSeconds:  accessTokenExpDeltaSeconds,
