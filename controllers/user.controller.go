@@ -104,3 +104,15 @@ func (c *UserController) Delete(ctx *fiber.Ctx) error {
 
 	return ctx.Status(200).JSON(nil)
 }
+
+// VerifyEmail is a method that sends an email verification email
+func (c *UserController) VerifyEmail(ctx *fiber.Ctx) error {
+
+	email := ctx.Params("email")
+
+	if exception := c.service.VerifyEmail(ctx.Context(), email); exception != nil {
+		return ctx.Status(exception.Status).JSON(exception)
+	}
+
+	return ctx.Status(200).JSON(nil)
+}

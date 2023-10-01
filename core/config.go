@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/joho/godotenv"
 )
@@ -29,6 +30,8 @@ type Config struct {
 	JwtSecret                   string
 	AccessTokenExpDeltaSeconds  int
 	RefreshTokenExpDeltaSeconds int
+
+	EmailVerificationExpDeltaSeconds time.Duration
 }
 
 // LoadConfig is a function that loads the environment variables
@@ -58,6 +61,8 @@ func LoadConfig() Config {
 	redisPort, _ := strconv.Atoi(os.Getenv("REDIS_PORT"))
 	redisPassword := os.Getenv("REDIS_PASSWORD")
 
+	EmailVerificationExpDeltaSeconds, _ := strconv.Atoi(os.Getenv("EMAIL_VERIFICATION_EXP_DELTA_SECONDS"))
+
 	config := Config{
 		AppName: appName,
 		AppPort: appPort,
@@ -76,6 +81,8 @@ func LoadConfig() Config {
 		JwtSecret:                   jwtSecret,
 		AccessTokenExpDeltaSeconds:  accessTokenExpDeltaSeconds,
 		RefreshTokenExpDeltaSeconds: refreshTokenExpDeltaSeconds,
+
+		EmailVerificationExpDeltaSeconds: time.Duration(EmailVerificationExpDeltaSeconds) * time.Second,
 	}
 
 	return config

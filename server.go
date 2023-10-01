@@ -6,6 +6,7 @@ import (
 	"github.com/efaraz27/go-auth/controllers"
 	"github.com/efaraz27/go-auth/core"
 	"github.com/efaraz27/go-auth/repositories"
+	"github.com/efaraz27/go-auth/repositories/store"
 	"github.com/efaraz27/go-auth/routers"
 	"github.com/efaraz27/go-auth/services"
 
@@ -30,13 +31,23 @@ func main() {
 		config.PostgresDBName,
 	)
 
+	// Connect to redis
+	redisClient := core.ConnetRedis(
+		config.RedisHost,
+		config.RedisPort,
+		config.RedisPassword,
+	)
+
 	// setup repositories
 	userRepository := repositories.NewUserRepository(db)
 
+	// setup redis repositories
+	emailVerificationRepository := store.NewEmailVerificationRepository(redisClient, config.EmailVerificationExpDeltaSeconds)
+
 	// setup services
-	userService := services.NewUserService(userRepository)
-	jwtService := services.NewJWTService(config.JwtSecret, config.AccessTokenExpDeltaSeconds, config.RefreshTokenExpDeltaSeconds)
-	authService := services.NewAuthService(userService, jwtService)
+	tokenService := services.NewTokenService(config.JwtSecret, config.AccessTokenExpDeltaSeconds, config.RefreshTokenExpDeltaSeconds)
+	userService := services.NewUserService(tokenService, userRepository, emailVerificationRepository)
+	authService := services.NewAuthService(userService, tokenService)
 
 	// setup controllers
 	userController := controllers.NewUserController(userService)

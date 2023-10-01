@@ -12,13 +12,13 @@ import (
 
 // AuthService is a struct that defines the auth service
 type AuthService struct {
-	userService *UserService
-	jwtService  *JWTService
+	userService  *UserService
+	tokenService *TokenService
 }
 
 // NewAuthService is a function that returns a new auth service
-func NewAuthService(userService *UserService, jwtService *JWTService) *AuthService {
-	return &AuthService{userService, jwtService}
+func NewAuthService(userService *UserService, tokenService *TokenService) *AuthService {
+	return &AuthService{userService, tokenService}
 }
 
 // Register is a method that registers a user
@@ -55,13 +55,13 @@ func (s *AuthService) Login(email string, password string) (*dtos.LoginResponseD
 		return nil, exception
 	}
 
-	accessToken, exception := s.jwtService.GenerateAccessToken(user.Uuid)
+	accessToken, exception := s.tokenService.GenerateAccessToken(user.Uuid)
 
 	if exception != nil {
 		return nil, exception
 	}
 
-	refreshToken, exception := s.jwtService.GenerateRefreshToken(user.Uuid)
+	refreshToken, exception := s.tokenService.GenerateRefreshToken(user.Uuid)
 
 	if exception != nil {
 		return nil, exception
