@@ -20,15 +20,7 @@ func main() {
 	)
 
 	// Create a queue
-	queue, err := rabbitmq.Ch.QueueDeclare(
-		"email_queue", // name
-		false,         // durable
-		false,         // delete when unused
-		false,         // exclusive
-		false,         // no-wait
-		nil,           // arguments
-	)
-
+	queue, err := core.DeclareQueue(rabbitmq.Ch, config.AmqpQueue)
 	if err != nil {
 		panic("failed to declare a queue")
 	}
@@ -43,7 +35,6 @@ func main() {
 		false,      // no-wait
 		nil,        // args
 	)
-
 	if err != nil {
 		panic("failed to register a consumer")
 	}

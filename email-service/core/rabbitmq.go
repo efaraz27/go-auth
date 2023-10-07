@@ -24,21 +24,18 @@ func NewRabbitMQ(scheme string, host string, port int, user string, password str
 	)
 
 	_, err := amqp.ParseURI(amqpUri)
-
 	if err != nil {
 		panic(fmt.Sprintf("failed to parse the AMQP URI: %s", err))
 	}
 
 	// Connect to RabbitMQ
 	conn, err := amqp.Dial(amqpUri)
-
 	if err != nil {
 		panic(fmt.Sprintf("failed to connect to RabbitMQ: %s", err))
 	}
 
 	// Create a channel
 	ch, err := conn.Channel()
-
 	if err != nil {
 		panic(fmt.Sprintf("failed to open a channel: %s", err))
 	}
@@ -47,4 +44,18 @@ func NewRabbitMQ(scheme string, host string, port int, user string, password str
 		Conn: conn,
 		Ch:   ch,
 	}
+}
+
+func DeclareQueue(ch *amqp.Channel, queueName string) (amqp.Queue, error) {
+	// Create a queue
+	queue, err := ch.QueueDeclare(
+		queueName, // name
+		false,     // durable
+		false,     // delete when unused
+		false,     // exclusive
+		false,     // no-wait
+		nil,       // arguments
+	)
+
+	return queue, err
 }

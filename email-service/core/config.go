@@ -16,6 +16,7 @@ type Config struct {
 	AmqpPort     int
 	AmqpUser     string
 	AmqpPassword string
+	AmqpQueue    string
 }
 
 // LoadConfig is a function that loads the environment variables
@@ -32,6 +33,7 @@ func LoadConfig() Config {
 	amqpPort, _ := strconv.Atoi(os.Getenv("AMQP_PORT"))
 	amqpUser := os.Getenv("AMQP_USER")
 	amqpPassword := os.Getenv("AMQP_PASSWORD")
+	amqpQueue := os.Getenv("AMQP_QUEUE")
 
 	return Config{
 		AmqpScheme:   amqpScheme,
@@ -39,5 +41,6 @@ func LoadConfig() Config {
 		AmqpPort:     amqpPort,
 		AmqpUser:     amqpUser,
 		AmqpPassword: amqpPassword,
+		AmqpQueue:    amqpQueue,
 	}
 }
