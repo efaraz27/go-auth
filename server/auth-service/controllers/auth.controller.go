@@ -1,9 +1,9 @@
 package controllers
 
 import (
-	"github.com/efaraz27/go-auth/auth-service/core"
-	"github.com/efaraz27/go-auth/auth-service/dtos"
-	"github.com/efaraz27/go-auth/auth-service/services"
+	"github.com/efaraz27/go-auth/server/auth-service/core"
+	"github.com/efaraz27/go-auth/server/auth-service/dtos"
+	"github.com/efaraz27/go-auth/server/auth-service/services"
 	"github.com/go-playground/validator/v10"
 
 	"github.com/gofiber/fiber/v2"

@@ -4,7 +4,7 @@ import (
 	"crypto/rand"
 	"time"
 
-	"github.com/efaraz27/go-auth/auth-service/core"
+	"github.com/efaraz27/go-auth/server/auth-service/core"
 	"github.com/google/uuid"
 
 	"github.com/golang-jwt/jwt"

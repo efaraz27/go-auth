@@ -1,7 +1,7 @@
 package routers
 
 import (
-	"github.com/efaraz27/go-auth/auth-service/controllers"
+	"github.com/efaraz27/go-auth/server/auth-service/controllers"
 
 	"github.com/gofiber/fiber/v2"
 )

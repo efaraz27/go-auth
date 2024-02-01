@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/efaraz27/go-auth/email-service/core"
+	"github.com/efaraz27/server/go-auth/email-service/core"
 )
 
 func main() {

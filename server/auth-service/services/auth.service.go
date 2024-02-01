@@ -3,9 +3,9 @@ package services
 import (
 	"math/rand"
 
-	"github.com/efaraz27/go-auth/auth-service/core"
-	"github.com/efaraz27/go-auth/auth-service/dtos"
-	"github.com/efaraz27/go-auth/auth-service/models"
+	"github.com/efaraz27/go-auth/server/auth-service/core"
+	"github.com/efaraz27/go-auth/server/auth-service/dtos"
+	"github.com/efaraz27/go-auth/server/auth-service/models"
 
 	"golang.org/x/crypto/bcrypt"
 )

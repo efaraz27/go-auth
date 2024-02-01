@@ -1,7 +1,7 @@
 package repositories
 
 import (
-	"github.com/efaraz27/go-auth/auth-service/models"
+	"github.com/efaraz27/go-auth/server/auth-service/models"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )

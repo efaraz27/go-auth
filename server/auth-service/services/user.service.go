@@ -3,10 +3,10 @@ package services
 import (
 	"context"
 
-	"github.com/efaraz27/go-auth/auth-service/core"
-	"github.com/efaraz27/go-auth/auth-service/models"
-	"github.com/efaraz27/go-auth/auth-service/repositories"
-	"github.com/efaraz27/go-auth/auth-service/repositories/store"
+	"github.com/efaraz27/go-auth/server/auth-service/core"
+	"github.com/efaraz27/go-auth/server/auth-service/models"
+	"github.com/efaraz27/go-auth/server/auth-service/repositories"
+	"github.com/efaraz27/go-auth/server/auth-service/repositories/store"
 	"github.com/google/uuid"
 )
 

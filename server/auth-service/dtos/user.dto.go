@@ -1,7 +1,7 @@
 package dtos
 
 import (
-	"github.com/efaraz27/go-auth/auth-service/models"
+	"github.com/efaraz27/go-auth/server/auth-service/models"
 )
 
 // UserUpdateDTO is a struct that defines the user update DTO

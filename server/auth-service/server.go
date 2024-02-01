@@ -3,12 +3,12 @@ package main
 import (
 	"log"
 
-	"github.com/efaraz27/go-auth/auth-service/controllers"
-	"github.com/efaraz27/go-auth/auth-service/core"
-	"github.com/efaraz27/go-auth/auth-service/repositories"
-	"github.com/efaraz27/go-auth/auth-service/repositories/store"
-	"github.com/efaraz27/go-auth/auth-service/routers"
-	"github.com/efaraz27/go-auth/auth-service/services"
+	"github.com/efaraz27/go-auth/server/auth-service/controllers"
+	"github.com/efaraz27/go-auth/server/auth-service/core"
+	"github.com/efaraz27/go-auth/server/auth-service/repositories"
+	"github.com/efaraz27/go-auth/server/auth-service/repositories/store"
+	"github.com/efaraz27/go-auth/server/auth-service/routers"
+	"github.com/efaraz27/go-auth/server/auth-service/services"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"

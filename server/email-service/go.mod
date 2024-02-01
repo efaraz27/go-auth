@@ -1,4 +1,4 @@
-module github.com/efaraz27/go-auth/email-service
+module github.com/efaraz27/server/go-auth/email-service
 
 go 1.21.1
 

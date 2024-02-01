@@ -1,4 +1,4 @@
-module github.com/efaraz27/go-auth/auth-service
+module github.com/efaraz27/go-auth/server/auth-service
 
 go 1.21.1
 

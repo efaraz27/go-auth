@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/efaraz27/go-auth/auth-service/models"
+	"github.com/efaraz27/go-auth/server/auth-service/models"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
