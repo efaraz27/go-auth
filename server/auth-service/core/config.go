@@ -27,6 +27,13 @@ type Config struct {
 	RedisPort     int
 	RedisPassword string
 
+	AmqpScheme   string
+	AmqpHost     string
+	AmqpPort     int
+	AmqpUser     string
+	AmqpPassword string
+	AmqpQueue    string
+
 	JwtSecret                   string
 	AccessTokenExpDeltaSeconds  int
 	RefreshTokenExpDeltaSeconds int
@@ -53,13 +60,20 @@ func LoadConfig() Config {
 	postgresPassword := os.Getenv("POSTGRES_PASSWORD")
 	postgresDBName := os.Getenv("POSTGRES_DBNAME")
 
-	jwtSecret := os.Getenv("JWT_SECRET")
-	accessTokenExpDeltaSeconds, _ := strconv.Atoi(os.Getenv("ACCESS_TOKEN_EXP_DELTA_SECONDS"))
-	refreshTokenExpDeltaSeconds, _ := strconv.Atoi(os.Getenv("REFRESH_TOKEN_EXP_DELTA_SECONDS"))
-
 	redisHost := os.Getenv("REDIS_HOST")
 	redisPort, _ := strconv.Atoi(os.Getenv("REDIS_PORT"))
 	redisPassword := os.Getenv("REDIS_PASSWORD")
+
+	amqpScheme := os.Getenv("AMQP_SCHEME")
+	amqpHost := os.Getenv("AMQP_HOST")
+	amqpPort, _ := strconv.Atoi(os.Getenv("AMQP_PORT"))
+	amqpUser := os.Getenv("AMQP_USER")
+	amqpPassword := os.Getenv("AMQP_PASSWORD")
+	amqpQueue := os.Getenv("AMQP_QUEUE")
+
+	jwtSecret := os.Getenv("JWT_SECRET")
+	accessTokenExpDeltaSeconds, _ := strconv.Atoi(os.Getenv("ACCESS_TOKEN_EXP_DELTA_SECONDS"))
+	refreshTokenExpDeltaSeconds, _ := strconv.Atoi(os.Getenv("REFRESH_TOKEN_EXP_DELTA_SECONDS"))
 
 	EmailVerificationExpDeltaSeconds, _ := strconv.Atoi(os.Getenv("EMAIL_VERIFICATION_EXP_DELTA_SECONDS"))
 
@@ -77,6 +91,13 @@ func LoadConfig() Config {
 		RedisHost:     redisHost,
 		RedisPort:     redisPort,
 		RedisPassword: redisPassword,
+
+		AmqpScheme:   amqpScheme,
+		AmqpHost:     amqpHost,
+		AmqpPort:     amqpPort,
+		AmqpUser:     amqpUser,
+		AmqpPassword: amqpPassword,
+		AmqpQueue:    amqpQueue,
 
 		JwtSecret:                   jwtSecret,
 		AccessTokenExpDeltaSeconds:  accessTokenExpDeltaSeconds,
