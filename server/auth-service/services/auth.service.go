@@ -6,6 +6,7 @@ import (
 	"github.com/efaraz27/go-auth/server/auth-service/core"
 	"github.com/efaraz27/go-auth/server/auth-service/dtos"
 	"github.com/efaraz27/go-auth/server/auth-service/models"
+	"github.com/gofiber/fiber/v2"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -14,27 +15,31 @@ import (
 type AuthService struct {
 	userService  *UserService
 	tokenService *TokenService
+	emailService *EmailService
 }
 
 // NewAuthService is a function that returns a new auth service
-func NewAuthService(userService *UserService, tokenService *TokenService) *AuthService {
-	return &AuthService{userService, tokenService}
+func NewAuthService(userService *UserService, tokenService *TokenService, emailService *EmailService) *AuthService {
+	return &AuthService{userService, tokenService, emailService}
 }
 
 // Register is a method that registers a user
-func (s *AuthService) Register(email string, password string, firstName string, lastName string) (*models.User, *core.Exception) {
+func (s *AuthService) Register(c *fiber.Ctx, email string, password string, firstName string, lastName string) (*models.User, *core.Exception) {
 
 	hashedPassword, err := hashPassword(password)
-
 	if err != nil {
 		exception := core.NewInternalServerErrorExceptionBuilder().WithMessage("Could not register user").Build()
 		return nil, exception
 	}
 
 	user, exception := s.userService.Create(email, hashedPassword, firstName, lastName)
-
 	if exception != nil {
 		return nil, exception
+	}
+
+	err = s.emailService.SendVerificationEmailRequest(c, user.Email, "")
+	if err != nil {
+		// meh we can ignore this error, probably just log it
 	}
 
 	return user, nil

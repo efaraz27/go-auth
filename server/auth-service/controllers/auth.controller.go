@@ -4,7 +4,6 @@ import (
 	"github.com/efaraz27/go-auth/server/auth-service/core"
 	"github.com/efaraz27/go-auth/server/auth-service/dtos"
 	"github.com/efaraz27/go-auth/server/auth-service/services"
-	"github.com/go-playground/validator/v10"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -24,19 +23,12 @@ func (c *AuthController) Register(ctx *fiber.Ctx) error {
 
 	registerDTO := new(dtos.RegisterDTO)
 
-	if err := ctx.BodyParser(registerDTO); err != nil {
-		exception := core.NewBadRequestExceptionBuilder().WithMessage("Invalid JSON").Build()
-		return ctx.Status(exception.Status).JSON(exception)
+	err := core.ValidateBodyWithDTO(ctx, registerDTO)
+	if err != nil {
+		return err
 	}
 
-	validator := validator.New()
-
-	if err := validator.Struct(registerDTO); err != nil {
-		exception := core.NewBadRequestExceptionBuilder().WithMessage("Invalid fields").Build()
-		return ctx.Status(exception.Status).JSON(exception)
-	}
-
-	user, exception := c.service.Register(registerDTO.Email, registerDTO.Password, registerDTO.FirstName, registerDTO.LastName)
+	user, exception := c.service.Register(ctx, registerDTO.Email, registerDTO.Password, registerDTO.FirstName, registerDTO.LastName)
 
 	if exception != nil {
 		return ctx.Status(exception.Status).JSON(exception)
@@ -50,16 +42,9 @@ func (c *AuthController) Login(ctx *fiber.Ctx) error {
 
 	loginDTO := new(dtos.LoginDTO)
 
-	if err := ctx.BodyParser(loginDTO); err != nil {
-		exception := core.NewBadRequestExceptionBuilder().WithMessage("Invalid JSON").Build()
-		return ctx.Status(exception.Status).JSON(exception)
-	}
-
-	validator := validator.New()
-
-	if err := validator.Struct(loginDTO); err != nil {
-		exception := core.NewBadRequestExceptionBuilder().WithMessage("Invalid fields").Build()
-		return ctx.Status(exception.Status).JSON(exception)
+	err := core.ValidateBodyWithDTO(ctx, loginDTO)
+	if err != nil {
+		return err
 	}
 
 	loginResponseDTO, exception := c.service.Login(loginDTO.Email, loginDTO.Password)

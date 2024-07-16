@@ -5,7 +5,6 @@ import (
 
 	"github.com/efaraz27/go-auth/server/auth-service/controllers"
 	"github.com/efaraz27/go-auth/server/auth-service/core"
-	"github.com/efaraz27/go-auth/server/auth-service/dtos/protobufs"
 	"github.com/efaraz27/go-auth/server/auth-service/repositories"
 	"github.com/efaraz27/go-auth/server/auth-service/repositories/store"
 	"github.com/efaraz27/go-auth/server/auth-service/routers"
@@ -13,8 +12,6 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
-	amqp "github.com/rabbitmq/amqp091-go"
-	"google.golang.org/protobuf/proto"
 )
 
 func main() {
@@ -63,9 +60,10 @@ func main() {
 	emailVerificationRepository := store.NewEmailVerificationRepository(redisClient, config.EmailVerificationExpDeltaSeconds)
 
 	// setup services
+	emailService := services.NewEmailService(rabbitmq, queue.Name)
 	tokenService := services.NewTokenService(config.JwtSecret, config.AccessTokenExpDeltaSeconds, config.RefreshTokenExpDeltaSeconds)
 	userService := services.NewUserService(tokenService, userRepository, emailVerificationRepository)
-	authService := services.NewAuthService(userService, tokenService)
+	authService := services.NewAuthService(userService, tokenService, emailService)
 
 	// setup controllers
 	userController := controllers.NewUserController(userService)
@@ -78,37 +76,8 @@ func main() {
 	app.Get("/api/healthchecker", func(c *fiber.Ctx) error {
 		return c.Status(200).JSON(fiber.Map{
 			"status":  "success",
-			"message": "Welcome to Golang, Fiber, and GORM",
+			"message": "Welcome to Go Auth Service",
 		})
-	})
-
-	app.Get("/send-email", func(c *fiber.Ctx) error {
-		payload := &protobufs.SendVerificationEmailRequest{
-			To:    "efaraz27@gmail.com",
-			Token: "test",
-		}
-
-		out, err := proto.Marshal(payload)
-
-		if err != nil {
-			return c.Status(500).JSON(fiber.Map{
-				"status":  "error",
-				"message": "Failed to marshal the payload",
-			})
-		}
-
-		// Publish the message
-		err = rabbitmq.Ch.PublishWithContext(c.Context(), "", queue.Name, false, false, amqp.Publishing{
-			ContentType: "application/protobuf",
-			Body:        out,
-		})
-
-		return c.Status(200).JSON(fiber.Map{
-			"status":  "success",
-			"message": "Welcome to Golang, Fiber, and GORM",
-			"payload": out,
-		})
-
 	})
 
 	log.Fatal(app.Listen(":8000"))
